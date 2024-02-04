@@ -4,7 +4,7 @@ import FormContainer from "../components/FormContainer";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 import { useUpdateUserMutation } from "../slices/usersApiSlice";
-import { setCredentials } from "../slices/authSlice";
+import { handleUserInfo } from "../slices/authSlice";
 
 const ProfileScreen = () => {
   const [email, setEmail] = useState("");
@@ -36,7 +36,7 @@ const ProfileScreen = () => {
           password,
         }).unwrap();
 
-        dispatch(setCredentials(res));
+        dispatch(handleUserInfo(res));
         toast.success("Profile updated successfully");
       } catch (err) {
         toast.error(err?.data?.message || err.error);

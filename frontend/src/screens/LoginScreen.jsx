@@ -1,63 +1,40 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import FormContainer from "../components/FormContainer";
-import { useCookies } from "react-cookie";
-import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { handleUserInfo } from "../slices/authSlice";
 import { toast } from "react-toastify";
-import Loader from "../components/Loader";
+import { useDispatch } from "react-redux";
 
-const LoginScreen = (credentials) => {
+const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const [, setCookie] = useCookies(["jwt"]);
+  const dispatch = useDispatch();
+  axios.defaults.withCredentials = true;
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
-    const credentials = {
-      email: email,
-      password: password,
-    };
-
     try {
-      const response = await fetch("http://localhost:8000/api/user/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
-      });
-
-      const data = await response.json();
-      console.log(data);
-      if (data) {
-        // Set token in cookie
-        console.log("it is the data  ", data);
-        const userInfo = {
-          name: data.name,
-          myEmail: data.email,
-          id: data._id,
-        };
-        console.log(userInfo);
-        localStorage.setItem("userInfo", JSON.stringify(userInfo));
-        // setCookie("jwt", data.token);
-
-        // Navigate to home page
+      const response = await axios.post(
+        "http://localhost:8000/api/user/login",
+        {
+          email,
+          password,
+        }
+      );
+      if (response.data) {
+        console.log(response.data);
+        dispatch(handleUserInfo(response.data));
         navigate("/");
       } else {
-        toast.error(data.message || "Something went wrong.");
+        console.log("there is no any data");
       }
-    } catch (error) {
-      toast.error(error);
+    } catch (err) {
+      toast.error(err.message || "An error occurred.");
     }
   };
-  // useEffect(() => {
-  //   if (user) {
-  //     navigate("/");
-  //   }
-  // }, [navigate, userInfo]);
 
   return (
     <FormContainer>

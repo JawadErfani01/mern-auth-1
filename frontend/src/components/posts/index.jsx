@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { getBackendImageDomain } from "../../utils/getBackendDomain";
-import { useCookies } from "react-cookie";
+
 import axios from "axios";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
-  const [cookies] = useCookies(["jwt"]);
-  console.log("it is cookies" + " " + cookies.jwt);
 
   async function fetchData() {
     try {
@@ -23,7 +21,6 @@ const Posts = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  console.log(posts);
   return (
     <div>
       {posts?.length > 0 ? (

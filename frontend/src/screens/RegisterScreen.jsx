@@ -4,7 +4,7 @@ import Loader from "../components/Loader";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useRegisterMutation } from "../slices/usersApiSlice";
-import { setCredentials } from "../slices/authSlice";
+import { handleUserInfo } from "../slices/authSlice";
 import { toast } from "react-toastify";
 
 const RegisterScreen = () => {
@@ -43,7 +43,7 @@ const RegisterScreen = () => {
         formData.append("password", password);
         formData.append("image", image);
         const res = await register(formData).unwrap();
-        dispatch(setCredentials({ ...res }));
+        dispatch(handleUserInfo({ ...res }));
         navigate("/");
       } catch (err) {
         toast.error(err?.data?.message || err.error);
