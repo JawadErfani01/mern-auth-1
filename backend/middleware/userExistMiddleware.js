@@ -14,7 +14,7 @@ const userExists = asyncHandler(async (req, res, next) => {
   if (isEmailExist) {
     await fs.unlink(req.file?.path);
 
-    throw new Error(`User email already exists`);
+    throw new Error(`User email already exists!`);
   }
 
   next();

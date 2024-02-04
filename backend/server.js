@@ -22,14 +22,14 @@ app.use(
   })
 );
 
-app.get("/", (req, res) => {
-  // Set a new cookie with the name 'test' and the value 'Hello, World!'
-  res.cookie("test", "Hello, World!");
-  res.cookie("auth", "true", { httpOnly: true });
+// app.get("/", (req, res) => {
+//   // Set a new cookie with the name 'test' and the value 'Hello, World!'
+//   res.cookie("test", "Hello, World!");
+//   res.cookie("auth", "true", { httpOnly: true });
 
-  // Send a response to inform the user that the cookie has been set
-  res.send("Cookie has been set!");
-});
+//   // Send a response to inform the user that the cookie has been set
+//   res.send("Cookie has been set!");
+// });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

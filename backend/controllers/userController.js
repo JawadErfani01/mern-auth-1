@@ -10,11 +10,9 @@ import generateToken from "../utils/generateToken.js";
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  console.log("hello man");
   const user = await User.findOne({ email });
   if (user && (await user.matchPassword(password))) {
     generateToken(res, user._id); // get the token from generateToken
-    res.cookie("hello", "how are you doing ny bro in here ");
     res.json({
       _id: user._id,
       name: user.name,
