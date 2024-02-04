@@ -1,26 +1,32 @@
-import { Container, Card, Button } from 'react-bootstrap';
-
 const Hero = () => {
   return (
-    <div className=' py-5'>
-      <Container className='d-flex justify-content-center'>
-        <Card className='p-5 d-flex flex-column align-items-center hero-card bg-light w-75'>
-          <h1 className='text-center mb-4'>MERN Authentication</h1>
-          <p className='text-center mb-4'>
+    <div className="py-5">
+      <div className="flex justify-center">
+        <div className="p-5 flex flex-col items-center bg-light w-3/4 md:w-1/2">
+          <h1 className="text-center mb-4 text-4xl font-bold">
+            MERN Authentication
+          </h1>
+          <p className="text-center mb-4">
             This is a boilerplate for MERN authentication that stores a JWT in
-            an HTTP-Only cookie. It also uses Redux Toolkit and the React
-            Bootstrap library
+            an HTTP-Only cookie. It also uses Redux Toolkit and the Tailwind CSS
+            library
           </p>
-          <div className='d-flex'>
-            <Button variant='primary' href='/login' className='me-3'>
+          <div className="flex">
+            <a
+              href="/login"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-3"
+            >
               Sign In
-            </Button>
-            <Button variant='secondary' href='/register'>
+            </a>
+            <a
+              href="/register"
+              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+            >
               Register
-            </Button>
+            </a>
           </div>
-        </Card>
-      </Container>
+        </div>
+      </div>
     </div>
   );
 };

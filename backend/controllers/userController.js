@@ -1,18 +1,20 @@
-import asyncHandler from 'express-async-handler';
-import User from '../models/userModel.js';
-import generateToken from '../utils/generateToken.js';
+import asyncHandler from "express-async-handler";
+import User from "../models/userModel.js";
 
-// @desc    Auth user & get token
-// @route   POST /api/users/auth
+import generateToken from "../utils/generateToken.js";
+
+// @desc    login user & get token
+// @route   POST /api/users/login
 // @access  Public
-const authUser = asyncHandler(async (req, res) => {
+
+const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
+  console.log("hello man");
   const user = await User.findOne({ email });
-
   if (user && (await user.matchPassword(password))) {
-    generateToken(res, user._id);
-
+    generateToken(res, user._id); // get the token from generateToken
+    res.cookie("hello", "how are you doing ny bro in here ");
     res.json({
       _id: user._id,
       name: user.name,
@@ -20,7 +22,7 @@ const authUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(401);
-    throw new Error('Invalid email or password');
+    throw new Error("Invalid email or password");
   }
 });
 
@@ -29,18 +31,19 @@ const authUser = asyncHandler(async (req, res) => {
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
-
+  // console.log(email);
   const userExists = await User.findOne({ email });
 
   if (userExists) {
     res.status(400);
-    throw new Error('User already exists');
+    throw new Error("User already exists");
   }
 
   const user = await User.create({
     name,
     email,
     password,
+    image: req.file.filename,
   });
 
   if (user) {
@@ -53,7 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error('Invalid user data');
+    throw new Error("Invalid user data");
   }
 });
 
@@ -61,11 +64,11 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/logout
 // @access  Public
 const logoutUser = (req, res) => {
-  res.cookie('jwt', '', {
+  res.cookie("jwt", "", {
     httpOnly: true,
     expires: new Date(0),
   });
-  res.status(200).json({ message: 'Logged out successfully' });
+  res.status(200).json({ message: "Logged out successfully" });
 };
 
 // @desc    Get user profile
@@ -82,7 +85,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 });
 
@@ -109,11 +112,11 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 });
 export {
-  authUser,
+  loginUser,
   registerUser,
   logoutUser,
   getUserProfile,
