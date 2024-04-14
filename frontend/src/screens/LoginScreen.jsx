@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import FormContainer from "../components/FormContainer";
-import axios from "axios";
 import { handleUserInfo } from "../slices/authSlice";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
+import { useLoginMutation } from "../slices/usersApiSlice";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -12,27 +12,17 @@ const LoginScreen = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  axios.defaults.withCredentials = true;
+  const [login, { isLoading }] = useLoginMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/user/login",
-        {
-          email,
-          password,
-        }
-      );
-      if (response.data) {
-        console.log(response.data);
-        dispatch(handleUserInfo(response.data));
-        navigate("/");
-      } else {
-        console.log("there is no any data");
-      }
+      const res = await login({ email, password }).unwrap();
+      dispatch(handleUserInfo({ ...res }));
+      navigate("/");
     } catch (err) {
-      toast.error(err.message || "An error occurred.");
+      toast.error(err?.data?.message || err.error);
     }
   };
 

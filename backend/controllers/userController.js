@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
-
+import Post from "../models/postModel.js";
 import generateToken from "../utils/generateToken.js";
 
 // @desc    login user & get token
@@ -59,10 +59,14 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 // @desc    Logout user / clear cookie
-// @route   POST /api/users/logout
+// @route   POST /api/user/logout
 // @access  Public
 const logoutUser = (req, res) => {
-  res.cookie("jwt", "", {
+  res.cookie("accessToken", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  res.cookie("refreshToken", "", {
     httpOnly: true,
     expires: new Date(0),
   });
@@ -75,11 +79,13 @@ const logoutUser = (req, res) => {
 const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
+  const posts = await Post.find({ author: req.user.id });
+  console.log(posts[posts.length - 1]);
   if (user) {
     res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
+      user: req.user,
+      numberOfPost: posts.length,
+      lastPost: posts[posts.length - 1],
     });
   } else {
     res.status(404);

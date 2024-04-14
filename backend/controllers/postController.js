@@ -13,7 +13,7 @@ const createPost = asyncHandler(async (req, res) => {
     title,
     content,
     author: req.user._id,
-    //  image: req.file.filename,
+    image: req.file.filename,
   });
 
   if (post) {
@@ -39,12 +39,13 @@ const getPosts = asyncHandler(async (req, res) => {
 // @route   GET /api/post/me
 // @access  private
 const getMePosts = asyncHandler(async (req, res) => {
-  console.log("jawad posts");
-  console.log("id" + req.user.id);
-  const posts = await Post.find({ author: req.user.id });
+  const posts = await Post.find({ author: req.user.id }).populate(
+    "author",
+    "name email image"
+  );
 
   if (posts) {
-    res.status(200).json({ posts, user: req.user });
+    res.status(200).json({ posts });
   } else {
     res.status(404).json({ message: "There are no posts" });
   }

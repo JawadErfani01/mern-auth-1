@@ -16,7 +16,7 @@ router.get("/", protect, getPosts);
 router.get("/me", protect, getMePosts);
 
 router.get("/:id", getAPost);
-router.post("/", protect, createPost);
+router.post("/", protect, imageUploader.single("image"), createPost);
 router.put("/:id", protect, updatePost);
 router.delete("/:id", protect, deletePost);
 

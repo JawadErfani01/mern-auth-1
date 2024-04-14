@@ -16,8 +16,7 @@ const App = () => {
     axios
       .get("http://localhost:8000/api/user/profile")
       .then((res) => {
-        dispatch(handleUserInfo(res.data));
-        navigate("/");
+        dispatch(handleUserInfo(res.data.user));
       })
       .catch((err) => {
         navigate("/login");

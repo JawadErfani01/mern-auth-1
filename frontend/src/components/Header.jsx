@@ -2,21 +2,29 @@ import { Link } from "react-router-dom";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useLogoutMutation } from "../slices/usersApiSlice";
+import { handleUserInfo } from "../slices/authSlice";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [logoutApiCall] = useLogoutMutation();
 
   const logoutHandler = async () => {
     try {
-      await logoutApiCall().unwrap();
-      dispatch(logout());
-      navigate("/login");
+      const response = await axios.post(
+        "http://localhost:8000/api/user/logout"
+      );
+      if (response.data) {
+        console.log(response.data);
+        dispatch(handleUserInfo(null));
+        navigate("/login");
+      } else {
+        console.log("there is no any data");
+      }
     } catch (err) {
-      console.error(err);
+      toast.error(err.message || "An error occurred.");
     }
   };
 

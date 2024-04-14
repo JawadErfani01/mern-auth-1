@@ -11,7 +11,7 @@ const postSchema = mongoose.Schema(
     },
 
     image: {
-      type: String,
+      type: String, // Assuming you'll store the photo URL as a string
     },
     author: {
       type: mongoose.Schema.Types.ObjectId,
