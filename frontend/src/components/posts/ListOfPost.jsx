@@ -1,32 +1,68 @@
 import { useEffect, useState } from "react";
 import { getBackendImageDomain } from "../../utils/getBackendDomain";
-import { useGetPostsQuery } from "../../slices/postApiSlice";
+import {
+  useGetPostsQuery,
+  useDeletePostMutation,
+} from "../../slices/postApiSlice"; // Import useDeletePostMutation
+import { IoMdMore } from "react-icons/io";
 
 const ListOfPost = () => {
-  const [posts, setPosts] = useState([]);
-  const { data, error, isLoading } = useGetPostsQuery();
-  console.log(posts);
+  const [selectedPost, setSelectedPost] = useState(null); // Track selected post for more options
+  const { data: posts, error, isLoading, refetch } = useGetPostsQuery();
+  const [deletePost] = useDeletePostMutation(); // Destructure deletePost from useDeletePostMutation
+
   useEffect(() => {
-    if (data) {
-      setPosts(data);
+    if (error) {
+      console.error("Error fetching posts:", error);
     }
-  }, [data]);
+  }, [error]);
+
+  const handleMoreOptionsClick = (postId) => {
+    setSelectedPost(postId === selectedPost ? null : postId); // Toggle selected post
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deletePost(id); // Call deletePost mutation with post ID
+      setSelectedPost(null); // Reset selected post after deletion
+      refetch();
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
   return (
     <div>
       {posts?.length > 0 ? (
         posts.map((post) => (
           <div
             key={post._id}
-            className="max-w-md mx-auto my-3 bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl"
+            className="max-w-md mx-auto my-3 bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl relative"
           >
+            <div className="absolute top-5 right-5 ">
+              <IoMdMore
+                size={24}
+                onClick={() => handleMoreOptionsClick(post._id)} // Handle click on more options icon
+                className="cursor-pointer"
+              />
+              {selectedPost === post._id && ( // Show more options if post is selected
+                <div className="absolute right-4 top-2 bg-white p-2 rounded-md shadow-md">
+                  <button
+                    onClick={() => handleDelete(post._id)} // Pass post ID to handleDelete
+                    className="border w-full my-2 bg-red-400 text-white rounded-md px-1"
+                  >
+                    Delete
+                  </button>
+                  <button className="border w-full my-2 bg-green-400 text-white rounded-md px-1">
+                    Edit
+                  </button>
+                </div>
+              )}
+            </div>
             <div className="md:flex">
               <div className="md:flex-shrink-0">
                 <img
@@ -39,9 +75,12 @@ const ListOfPost = () => {
                   alt="Park image"
                 />
               </div>
+
               <div className="p-8">
-                <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
-                  {post.title}
+                <div className="flex justify-between items-center ">
+                  <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+                    {post.title}
+                  </div>
                 </div>
                 <p className="mt-2 text-gray-500">{post.content}</p>
                 <div className="flex items-center mt-4">

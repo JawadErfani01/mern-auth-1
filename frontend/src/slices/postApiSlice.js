@@ -1,7 +1,5 @@
 import { apiSlice } from "./apiSlice";
 
-// const BASE_URL = "http://localhost:8000/api";
-
 export const postApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query({
@@ -18,13 +16,25 @@ export const postApiSlice = apiSlice.injectEndpoints({
     }),
     createPost: builder.mutation({
       query: (formData) => ({
-        url: `/post`, // Corrected URL
+        url: `/post`,
         method: "POST",
         body: formData,
+      }),
+    }),
+    deletePost: builder.mutation({
+      // Changed to builder.mutation
+      query: (id) => ({
+        // Assuming id is the post ID to delete
+        url: `/post/${id}`,
+        method: "DELETE", // Changed to uppercase "DELETE"
       }),
     }),
   }),
 });
 
-export const { useGetPostsQuery, useCreatePostMutation, useGetMePostsQuery } =
-  postApiSlice;
+export const {
+  useGetPostsQuery,
+  useCreatePostMutation,
+  useGetMePostsQuery,
+  useDeletePostMutation, // Changed to useDeletePostMutation
+} = postApiSlice;
